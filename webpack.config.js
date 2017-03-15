@@ -1,24 +1,27 @@
 var isDevBuild = process.argv.indexOf('--env.prod') < 0;
 var path = require('path');
 var webpack = require('webpack');
-var AureliaWebpackPlugin = require('aurelia-webpack-plugin');
+const { AureliaPlugin } = require('aurelia-webpack-plugin');
 
 var bundleOutputDir = './wwwroot/dist';
 module.exports = {
-    resolve: { extensions: [ '.js', '.ts' ] },
-    entry: { 'app': 'aurelia-bootstrapper-webpack' }, // Note: The aurelia-webpack-plugin will add your app's modules to this bundle automatically
+    resolve: {
+        extensions: [ '.js', '.ts' ],
+        modules: ["ClientApp", "node_modules"],
+    },
+    entry: { main: 'aurelia-bootstrapper' }, // Note: The aurelia-webpack-plugin will add your app's modules to this bundle automatically
     output: {
         path: path.resolve(bundleOutputDir),
         publicPath: '/dist',
         filename: '[name].js'
     },
     module: {
-        loaders: [
-            { test: /\.ts$/, include: /ClientApp/, loader: 'ts-loader', query: { silent: true } },
-            { test: /\.html$/, loader: 'html-loader' },
-            { test: /\.css$/, loaders: [ 'style-loader', 'css-loader' ] },
-            { test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000' },
-            { test: /\.json$/, loader: 'json-loader' }
+        rules: [
+            { test: /\.ts$/, include: /ClientApp/, use: "ts-loader" },
+            { test: /\.html$/, use: ['html-loader'] },
+            { test: /\.css$/, use: ["style-loader", "css-loader"] },
+            { test: /\.(png|woff|woff2|eot|ttf|svg)$/, use: ['url-loader?limit=100000'] },
+            { test: /\.json$/, use: ['json-loader'] }
         ]
     },
     plugins: [
@@ -27,11 +30,7 @@ module.exports = {
             context: __dirname,
             manifest: require('./wwwroot/dist/vendor-manifest.json')
         }),
-        new AureliaWebpackPlugin({
-            root: path.resolve('./'),
-            src: path.resolve('./ClientApp'),
-            baseUrl: '/'
-        })
+        new AureliaPlugin()
     ].concat(isDevBuild ? [
         // Plugins that apply in development builds only
         new webpack.SourceMapDevToolPlugin({
