@@ -30,7 +30,9 @@ module.exports = {
             context: __dirname,
             manifest: require('./wwwroot/dist/vendor-manifest.json')
         }),
-        new AureliaPlugin()
+        new AureliaPlugin({
+            aureliaApp: undefined
+        })
     ].concat(isDevBuild ? [
         // Plugins that apply in development builds only
         new webpack.SourceMapDevToolPlugin({
