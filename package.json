@@ -1,6 +1,10 @@
 {
   "name": "AspnetSpa1",
   "version": "0.0.0",
+  "scripts": {
+    "build": "npm run webpack:vendor",
+    "webpack:vendor": "node node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js --env.prod"
+  },
   "dependencies": {
     "aurelia-bootstrapper": "2.1.1",
     "aurelia-bootstrapper-webpack": "^1.0.0",
