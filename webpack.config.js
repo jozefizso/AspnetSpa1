@@ -19,7 +19,11 @@ module.exports = {
         rules: [
             { test: /\.ts$/, include: /ClientApp/, use: "ts-loader" },
             { test: /\.html$/, use: ['html-loader'] },
-            { test: /\.css$/, use: ["style-loader", "css-loader"] },
+            // CSS required in JS/TS files should use the style-loader that auto-injects it into the website
+            // only when the issuer is a .js/.ts file, so the loaders are not applied inside templates
+            // https://github.com/jods4/aurelia-webpack-build/wiki/CSS-doesn't-load
+            { test: /\.css$/i, use: 'style-loader', issuer: /\.[tj]s$/i },
+            { test: /\.css$/i, use: 'css-loader', issuer: /\.html?$/i },
             { test: /\.(png|woff|woff2|eot|ttf|svg)$/, use: ['url-loader?limit=100000'] },
             { test: /\.json$/, use: ['json-loader'] }
         ]
