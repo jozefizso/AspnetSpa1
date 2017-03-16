@@ -3,15 +3,16 @@ var path = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var extractCSS = new ExtractTextPlugin('vendor.css');
+const { AureliaPlugin } = require('aurelia-webpack-plugin');
 
 module.exports = {
     resolve: {
         extensions: [ '.js' ]
     },
     module: {
-        loaders: [
-            { test: /\.(png|woff|woff2|eot|ttf|svg)(\?|$)/, loader: 'url-loader?limit=100000' },
-            { test: /\.css(\?|$)/, loader: extractCSS.extract(['css-loader']) }
+        rules: [
+            { test: /\.(png|woff|woff2|eot|ttf|svg)(\?|$)/, use: 'url-loader?limit=100000' },
+            { test: /\.css(\?|$)/, use: extractCSS.extract(['css-loader']) }
         ]
     },
     entry: {
@@ -29,7 +30,6 @@ module.exports = {
             'aurelia-templating-resources',
             'aurelia-templating-router',
             'bootstrap',
-            'bootstrap/dist/css/bootstrap.css',
             'jquery'
         ],
     },
@@ -45,6 +45,9 @@ module.exports = {
         new webpack.DllPlugin({
             path: path.join(__dirname, 'wwwroot', 'dist', '[name]-manifest.json'),
             name: '[name]_[hash]'
+        }),
+        new AureliaPlugin({
+            aureliaApp: undefined
         })
     ].concat(isDevBuild ? [] : [
         new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } })
