@@ -9,7 +9,7 @@ module.exports = {
         extensions: [ '.js', '.ts' ],
         modules: ["ClientApp", "node_modules"],
     },
-    entry: { main: 'aurelia-bootstrapper' }, // Note: The aurelia-webpack-plugin will add your app's modules to this bundle automatically
+    entry: { 'main': 'aurelia-bootstrapper' }, // Note: The aurelia-webpack-plugin will add your app's modules to this bundle automatically
     output: {
         path: path.resolve(bundleOutputDir),
         publicPath: '/dist',
@@ -27,12 +27,9 @@ module.exports = {
     plugins: [
         new webpack.DefinePlugin({ IS_DEV_BUILD: JSON.stringify(isDevBuild) }),
         new webpack.DllReferencePlugin({
-            context: __dirname,
             manifest: require('./wwwroot/dist/vendor-manifest.json')
         }),
-        new AureliaPlugin({
-            aureliaApp: undefined
-        })
+        new AureliaPlugin()
     ].concat(isDevBuild ? [
         // Plugins that apply in development builds only
         new webpack.SourceMapDevToolPlugin({
